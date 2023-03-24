@@ -23,8 +23,8 @@ JAR_HOME = "/data/admin-api/"
 JAR_NAME = "admin-api-1.0-SNAPSHOT.jar"
 ACTIVE = "dev"
 
-SECRET = "TfzraBX6IAnyJdZ56RMsl"
-FEISHU_HOOK_URL = "https://open.feishu.cn/open-apis/bot/v2/hook/57c3177e-7f28-4be2-8245-d18bde10420e"
+SECRET = "TfzraB*******6RMsl"
+FEISHU_HOOK_URL = "https://open.feishu.cn/open-apis/bot/v2/hook/57c31*******10420e"
 LOG_FILE = JAR_NAME.strip('\n').split('-')[0] + '_supervisor.log'
 NOW_TIME = datetime.datetime.now()
 
@@ -110,7 +110,7 @@ def is_java_running(java_program_name):
 if __name__ == '__main__':
     # 检查Java进程是否在运行
     if is_java_running(JAR_NAME):
-        print(NOW_TIME + 'hz-prd02服务器上 '+JAR_NAME + ' 正在运行.....')
+        print(str(NOW_TIME) + '  hz-prd02服务器上 '+JAR_NAME + ' 正在运行.....')
 
     else:
         if os.path.exists(JAR_HOME + JAR_NAME):
