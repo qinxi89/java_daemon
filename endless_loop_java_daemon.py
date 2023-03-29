@@ -17,14 +17,20 @@ import hmac
 import hashlib
 import base64
 import datetime
+import socket
 
+ '''
+        java 项目守护进程，结合定时任务jiacrontab，定期执行脚本，实现进程结束迅速拉起并发送飞书消息功能
+ '''
+  
 # 定义项目的家目录，jar包名称，环境变量
-JAR_HOME = "/data/admin-api/"
-JAR_NAME = "admin-api-1.0-SNAPSHOT.jar"
-ACTIVE = "dev"
+JAR_HOME = "/data/distribution-server/"
+JAR_NAME = "distribution-provider-0.0.1-SNAPSHOT.jar"
+ACTIVE = "prd"
 
-SECRET = "TfzraB*******6RMsl"
-FEISHU_HOOK_URL = "https://open.feishu.cn/open-apis/bot/v2/hook/57c31*******10420e"
+HOST = socket.gethostname()
+SECRET = "3cqrtFx******CKiyh"
+FEISHU_HOOK_URL = "https://open.feishu.cn/open-apis/bot/v2/hook/9a677d5c***12f042858"
 LOG_FILE = JAR_NAME.strip('\n').split('-')[0] + '_supervisor.log'
 NOW_TIME = datetime.datetime.now()
 
@@ -33,7 +39,7 @@ logging.basicConfig(filename=LOG_FILE, level=logging.INFO,
                     datefmt='%Y-%m-%d %H:%M:%S')
 
 # 定义Java进程启动命令
-JAVA_COMMAND = ["nohup", "java", "-jar", f"-Dspring.profiles.active={ACTIVE}", JAR_HOME + JAR_NAME]
+JAVA_COMMAND = ["cd",f"{JAR_HOME}"," && ", "nohup", "java", "-jar", f"-Dspring.profiles.active={ACTIVE}", JAR_NAME]
 JAVA_COMMAND_STR = " ".join(JAVA_COMMAND) + " > /dev/null 2>&1 &"
 
 def generate_signature(timestamp, secret):
@@ -110,12 +116,13 @@ def is_java_running(java_program_name):
 if __name__ == '__main__':
     # 检查Java进程是否在运行
     if is_java_running(JAR_NAME):
-        print(str(NOW_TIME) + '  hz-prd02服务器上 '+JAR_NAME + ' 正在运行.....')
+        print(str(NOW_TIME) +' '+ HOST+ '服务器上 '+JAR_NAME + ' 正在运行.....')
 
     else:
         if os.path.exists(JAR_HOME + JAR_NAME):
-            send_feishu_message(JAR_NAME + ' 正在重启......')
+            send_feishu_message(HOST+ '服务器上 '+ JAR_NAME + ' 正在重启......')
             logging.info(JAR_NAME + ' 正在重启......')
+            
             # Java进程未运行，启动它
             subprocess.Popen(JAVA_COMMAND_STR, shell=True)
             time.sleep(10)
